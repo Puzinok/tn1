@@ -1,5 +1,8 @@
+print "Введите a: "
 a = gets.chomp.to_i
+print "Введите b: "
 b = gets.chomp.to_i
+print "Введите c: "
 c = gets.chomp.to_i
 
 d = (b**2) - 4*(a*c)
