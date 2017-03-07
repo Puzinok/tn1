@@ -1,9 +1,9 @@
 print "Введите a: "
-a = gets.chomp.to_i
+a = gets.chomp.to_f
 print "Введите b: "
-b = gets.chomp.to_i
+b = gets.chomp.to_f
 print "Введите c: "
-c = gets.chomp.to_i
+c = gets.chomp.to_f
 
 d = (b**2) - 4*(a*c)
 
