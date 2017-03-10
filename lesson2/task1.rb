@@ -12,4 +12,4 @@ months = {
   november: 30,
   december: 31
 }
-months.each {|k, v| puts "#{k}" if v == 30}
+months.each {|k, v| puts k if v == 30}
