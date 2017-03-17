@@ -16,10 +16,7 @@ class Station
   end
 
   def trains_by_type(type)
-    @type = []
-    @trains.each do |t|
-      @type << t if t.type == type
-    end
+    @trains.select{|t| t.type == type}
   end
 
 end
@@ -67,33 +64,33 @@ class Train
   end 
 
   def delete_car
-    @cars -= 1 if @speed == 0 && @cars >= 0
+    @cars -= 1 if @speed == 0 && @cars > 0
   end
   
 
   def add_route(route)
     @route = route
-    @current = 0
-    @station = @route.stations[@current]
+    @station_index = 0
+    @station = @route.stations[@station_index]
     @station.arrive(self)
   end
 
   def motion(direction)
     @station.departure(self)
-    if direction == "forward"
-      @station = @route.stations[@current += 1]
+    if direction == :forward
+      @station = @route.stations[@station_index += 1]
     else
-      @station = @route.stations[@current -= 1]
+      @station = @route.stations[@station_index -= 1]
     end
     @station.arrive(self)
   end
 
   def forward
-    motion("forward") if @station != @route.stations.last
+    motion(:forward) if @station != @route.stations.last
   end
 
   def backward
-    motion("back") if @station != @route.stations.first
+    motion(:back) if @station != @route.stations.first
   end
   
   def current_st
