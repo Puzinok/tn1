@@ -42,7 +42,7 @@ end
 
 
 class Train
-  attr_reader :speed, :cars, :type, :station
+  attr_reader :speed, :cars, :type
 
   def initialize(id, type, cars)
     @speed = 0
@@ -71,37 +71,33 @@ class Train
   def add_route(route)
     @route = route
     @station_index = 0
-    @station = @route.stations[@station_index]
-    @station.arrive(self)
+    @route.stations[@station_index].arrive(self)
   end
 
   def motion(direction)
-    @station.departure(self)
-    if direction == :forward
-      @station = @route.stations[@station_index += 1]
-    else
-      @station = @route.stations[@station_index -= 1]
-    end
-    @station.arrive(self)
+    current_station.departure(self)
+    shift = direction == :forward ? 1 : -1
+    @station_index += shift
+    current_station.arrive(self)
   end
 
   def forward
-    motion(:forward) if @station != @route.stations.last
+    motion(:forward) if current_station != @route.stations.last
   end
 
   def backward
-    motion(:back) if @station != @route.stations.first
+    motion(:back) if current_station != @route.stations.first
   end
   
-  def current_st
-    @station
+  def current_station
+    @route.stations[@station_index]
   end
 
-  def next_st
-    @route.stations[@current + 1] if @station != @route.stations.last
+  def next_station
+    @route.stations[@station_index + 1] if current_station != @route.stations.last
   end
 
-  def prev_st
-    @route.stations[@current - 1] if @station != @route.stations.first
+  def prev_station
+    @route.stations[@station_index - 1] if current_station != @route.stations.first
   end
 end
