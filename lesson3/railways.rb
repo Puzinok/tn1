@@ -94,7 +94,7 @@ class Train
   end
 
   def next_station
-    @route.stations[@station_index + 1] if current_station != @route.stations.last
+    @route.stations[@station_index + 1]
   end
 
   def prev_station
