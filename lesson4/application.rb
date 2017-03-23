@@ -3,9 +3,6 @@ class Application
     @stations_list = []
     @trains_list = []
     @routes_list = []
-
-    sn = %w(Бологое Поповка Аникеевка Икша)
-    sn.each{|s| @stations_list << Station.new(s) }
   end
 
   def create_station
