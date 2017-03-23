@@ -54,12 +54,13 @@ class Train
   def prev_station
     @route.stations[@station_index - 1] if current_station != @route.stations.first
   end
-  
-  private
-  attr_writer :speed 
 
+  protected  
   #проверяет тип вагона
   def valid_carriage?; end
+
+  private
+  attr_writer :speed 
 
   #метод для перемещения поезда, используется только внутри
   def motion(direction)
