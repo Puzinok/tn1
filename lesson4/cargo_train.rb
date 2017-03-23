@@ -1,8 +1,6 @@
 class CargoTrain < Train
-  attr_reader :type
-
-  def initialize(id)
-    super
-    @type = :cargo
+  
+  def valid_carriage?(carriage)
+    carriage.instance_of? CargoCarriage
   end
 end

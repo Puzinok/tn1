@@ -1,8 +1,6 @@
 class PassengerTrain < Train
-  attr_reader :type
-
-  def initialize(id)
-    super
-    @type = :passenger
+  
+  def valid_carriage?(carriage)
+    carriage.instance_of? PassengerCarriage
   end
 end

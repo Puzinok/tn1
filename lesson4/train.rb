@@ -59,9 +59,7 @@ class Train
   attr_writer :speed 
 
   #проверяет тип вагона
-  def valid_carriage?(carriage)
-    @type == carriage.type
-  end
+  def valid_carriage?; end
 
   #метод для перемещения поезда, используется только внутри
   def motion(direction)
