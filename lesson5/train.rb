@@ -3,17 +3,17 @@ class Train
 
   attr_reader :id, :speed, :route, :carriages
   
-  @@all_trains = []
+  @@all_trains = {}
 
   def self.find(train_id)
-    @@all_trains.find{|tr| tr.id == train_id}
+    @@all_trains[train_id]
   end
 
   def initialize(id)
     @speed = 0
     @id = id
     @carriages = []
-    @@all_trains << self
+    @@all_trains[@id] = self
   end
 
 
