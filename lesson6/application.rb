@@ -3,6 +3,13 @@ class Application
     @stations_list = []
     @trains_list = []
     @routes_list = []
+
+    @stations_list << Station.new("St1")
+    @stations_list << Station.new("St2")
+
+
+    @routes_list << Route.new(@stations_list[0], @stations_list[1])
+    @trains_list << CargoTrain.new("12345")
   end
 
   def create_station
@@ -11,79 +18,75 @@ class Application
     @stations_list << Station.new(station_name)
   rescue RuntimeError => e
     p e
-  retry
     print_stations
+  retry
   end
 
-
   def create_train
-    begin
-      puts "Тип поезда (passenger/cargo):"
-      type = gets.chomp.to_sym
-      raise "Неверный тип поезда!" if type != :passenger && type != :cargo
-    
-      puts "Номер поезда:"
-      train_id = gets.chomp
-      
-      new_train = { passender: PassengerTrain.new(train_id),
-                    cargo: CargoTrain.new(train_id) }
+    puts "Тип поезда (passenger/cargo):"
+    type = gets.chomp.to_sym
+  raise "Неверный тип поезда!" if type != :passenger && type != :cargo
+    puts "Номер поезда:"
+    train_id = gets.chomp
+    @trains_list << PassengerTrain.new(train_id) if type == :passenger
+    @trains_list << CargoTrain.new(train_id) if type == :cargo
 
-      new_train[type]
-
-    rescue RuntimeError => e
-      p e
-      retry
-    end
     puts "Создан поезд № #{train_id}, тип: #{type}."
-
+  rescue RuntimeError => e
+    p e
+  retry
   end
 
   def create_route
     puts "Начальная станция:"
     first_station = find_station
-
     puts "Конечная станция:"
     last_station = find_station
-
-    if first_station && last_station
-      @routes_list << Route.new(first_station, last_station)
-      print_routes
-    else
-      puts "Маршрут не создан!"
-    end
+    new_route = Route.new(first_station, last_station)
+    @routes_list << new_route if new_route.valid?
+  rescue RuntimeError => e
+    p e
+    puts "Маршрут не создан!"
+  retry
   end
 
   def assign_route
     print_routes
-    if train = find_train
-      train.add_route(find_route)
-    end
+    find_train.add_route(find_route)
+  rescue RuntimeError => e
+    p e
   end
   
   def go_forward
-    if train = find_train 
-      train.forward
-    end
+    train = find_train
+    train.forward
+    raise "У поезда нет маршрута!" if train.route.nil?
+  rescue RuntimeError => e
+    p e
   end
 
   def go_backward
-     if train = find_train
-      train.backward
-     end
+    train = find_train
+    train.backward
+    raise "У поезда нет маршрута!" if train.route.nil?
+  rescue RuntimeError => e
+    p e
   end
 
   def hook_carriage
-    if train = find_train 
-      car = create_carriage(train)
-      train.add_carriage(car)
-    end
+    train = find_train
+    car = create_carriage(train)
+    train.add_carriage(car)
+  rescue RuntimeError => e
+    p e
   end
 
   def unhook_carriage
-    if train = find_train
-      car = train.carriages.last
-      train.delete_carriage(car)
-    end
+    train = find_train
+    car = train.carriages.last
+    train.delete_carriage(car)
+  rescue RuntimeError => e
+    p e
   end
 
   def change_route
@@ -98,6 +101,8 @@ class Application
     else
       puts "Ошибка ввода!"
     end
+  rescue RuntimeError => e
+    p e
   end
 
   def print_routes
@@ -115,40 +120,35 @@ class Application
   end
 
   def trains_on_station
-    if station = find_station
-      station.trains.each{|tr| puts "Номер поезда: #{tr.id}, вагонов: #{tr.carriages.size} #{tr.object_id}"}
-    end
+    station = find_station
+    station.trains.each{|tr| puts "Номер поезда: #{tr.id}, вагонов: #{tr.carriages.size}"}
+  rescue RuntimeError => e
+    p e
   end
 
   private
 
   def find_train
     puts "Введите номер поезда:"
-    train_number = gets.chomp
-    if train = @trains_list.find{ |tr| tr.id == train_number }
-      train
-    else
-      puts "Такого поезда не существует!"
-    end
+    train_id = gets.chomp
+    train = Train.find(train_id)
+    raise "Такого поезда не существует!" if train.nil?
+    train
   end
 
   def find_route
-    puts "Введите номер маршрута"
-    if route = @routes_list[gets.to_i]
-      route
-    else
-      puts "Такого маршрута не существует"
-    end
+    puts "Введите номер маршрута:"
+    route = @routes_list[gets.to_i]
+    raise "Такого маршрута не существует!" if route.nil?
+    route
   end
 
   def find_station
     puts "Введите название станции:"
     station_name = gets.chomp
-    if station = @stations_list.find{ |st| st.name == station_name }
-      station
-    else
-      puts "Такой станции не существует!"
-    end
+    station = Station.all.find{|st| st.name == station_name}
+    raise "Такой станции не существует!" if station.nil?
+    station
   end
 
   def create_carriage(train)
@@ -159,9 +159,5 @@ class Application
     else
       puts "Неизвестный тип поезда!"
     end
-  end
-
-  def station_exist(station_name)
-    @stations_list.find{ |st| st.name == station_name } ? (puts "Такая станция уже есть!") : station_name
   end
 end

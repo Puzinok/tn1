@@ -14,6 +14,12 @@ class Station
     @@all_stations << self 
   end
 
+  def valid?
+    validate!
+  rescue
+    false
+  end
+
   def arrive(train)
     @trains << train
   end
@@ -28,9 +34,9 @@ class Station
   
   private
   def validate!
-    raise "Отсутствует название станции!" if name.empty?
+    raise "Отсутствует название станции!" if name.to_s.empty?
     raise "Название должно быть больше 1 символа" if name.length < 2
-    raise "Такая станция уже есть!" if Station.all.find{|s| s.name == name}
+    raise "Такая станция уже есть!" if self.class.all.find{|s| s.name == name}
     true
   end
 end

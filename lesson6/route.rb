@@ -6,6 +6,12 @@ class Route
     validate!
   end
 
+  def valid?
+    validate!
+  rescue
+    false
+  end
+
   def add_station(station)
     @stations.insert(-2, station)
   end
@@ -14,5 +20,12 @@ class Route
     if station != @stations.last && station != @stations.first
       @stations.delete(station)
     end
+  end
+
+  private
+  def validate!
+    raise "Начальной станции не существует!" if @stations.first.class != Station
+    raise "Конечной станции не существует!" if @stations.last.class != Station
+    true
   end
 end

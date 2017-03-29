@@ -11,7 +11,7 @@ class Train
     @@all_trains[train_id]
   end
 
-  ID_FORMAT = /^[a-z0-9]{3}(-|)[a-z0-9]{2}$/i
+  ID_FORMAT = /^[a-z\d]{3}-?[a-z\d]{2}$/i
   
   def initialize(id)
     @speed = 0
@@ -84,8 +84,8 @@ class Train
   attr_writer :speed 
 
   def validate!
-    raise "Отсутствует номер поезда!" if id.empty?
-    raise "Номер не соответствует формату!" if id !~ ID_FORMAT
+    raise "Номер не соответствует формату!" if id.to_s !~ ID_FORMAT
+    raise "Поезд с таким номером уже сушествует!" if Train.find(id)
     true
   end
   
