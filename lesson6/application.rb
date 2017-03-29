@@ -3,13 +3,6 @@ class Application
     @stations_list = []
     @trains_list = []
     @routes_list = []
-
-    @stations_list << Station.new("St1")
-    @stations_list << Station.new("St2")
-
-
-    @routes_list << Route.new(@stations_list[0], @stations_list[1])
-    @trains_list << CargoTrain.new("12345")
   end
 
   def create_station
