@@ -1,4 +1,5 @@
 class Application
+  attr_accessor :stations_list
   def initialize
     @stations_list = []
     @trains_list = []
@@ -107,19 +108,57 @@ class Application
     end
   end
 
-  def print_stations
-    puts "Список станций:"
-    @stations_list.each{ |st| puts st.name }
-  end
-
   def trains_on_station
     station = find_station
-    station.trains.each{|tr| puts "Номер поезда: #{tr.id}, вагонов: #{tr.carriages.size}"}
+    station.each_train do |t|
+      puts "№ #{t.id}, тип: #{t.class}, вагонов: #{t.carriages.size}"
+    end
+  rescue RuntimeError => e
+    p e
+  end
+
+  def cars_of_train
+    train = find_train
+    i = 0
+    train.each_carriage do |c|
+      puts "#{i += 1}. #{c.print_carriage}"
+    end
+  rescue RuntimeError => e
+    p e
+  end
+
+  def print_stations
+    @stations_list.each do |s|
+      puts s.name 
+      s.each_train { |t| puts "   № #{t.id}, тип: #{t.class}, вагонов: #{t.carriages.size}"}
+    end
+  end
+
+  def load_carriage
+    carriage = find_carriage
+    if carriage.is_a? CargoCarriage
+      puts "Доступный объем: #{carriage.free_capacity}"
+      puts "Введите сколько заполнить:"
+      carriage.use_capacity(gets.to_i)
+      puts "Осталось м3: #{carriage.free_capacity}"
+    elsif carriage.is_a? PassengerCarriage
+      carriage.take_seat
+      puts "Место успешно занято."
+      puts "Осталось мест: #{carriage.free_seats}"
+    end
   rescue RuntimeError => e
     p e
   end
 
   private
+
+  def find_carriage
+    train = find_train
+    puts "Введите номер вагона:"
+    carriage = train.carriages[gets.to_i - 1]
+    raise "Такого вагона не существует!" if carriage == nil
+    carriage
+  end
 
   def find_train
     puts "Введите номер поезда:"
@@ -146,9 +185,11 @@ class Application
 
   def create_carriage(train)
     if train.is_a? PassengerTrain
-      PassengerCarriage.new
+      puts "Введите количество мест в вагоне:"
+      PassengerCarriage.new(gets.chomp)
     elsif train.is_a? CargoTrain
-      CargoCarriage.new
+      puts "Введите объем вагона:"
+      CargoCarriage.new(gets.chomp)
     else
       puts "Неизвестный тип поезда!"
     end
