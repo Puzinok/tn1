@@ -22,7 +22,7 @@ class Train
   end
 
   def each_carriage
-    self.carriages.each { |car| yield(car) }
+    carriages.each { |car| yield(car) }
   end
 
   def valid?
@@ -79,8 +79,10 @@ class Train
     @route.stations[@station_index - 1] if current_station != @route.stations.first
   end
 
-  protected  
-  #проверяет тип вагона
+  protected
+  
+  attr_writer :speed
+  
   def valid_carriage?; end
 
   def validate!
@@ -89,10 +91,6 @@ class Train
     true
   end
 
-  private
-  attr_writer :speed
-
-  #метод для перемещения поезда, используется только внутри
   def motion(direction)
     current_station.departure(self)
     shift = direction == :forward ? 1 : -1

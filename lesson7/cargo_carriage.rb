@@ -16,7 +16,7 @@ class CargoCarriage
     @capacity - @used_capacity
   end
 
-  def print_carriage
+  def to_s
     "тип: #{self.class}, свободно: #{free_capacity}, занято #{@used_capacity}."
   end
 end

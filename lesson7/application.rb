@@ -121,7 +121,7 @@ class Application
     train = find_train
     i = 0
     train.each_carriage do |c|
-      puts "#{i += 1}. #{c.print_carriage}"
+      puts "#{i += 1}. #{c}"
     end
   rescue RuntimeError => e
     p e

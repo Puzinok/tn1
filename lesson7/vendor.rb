@@ -3,6 +3,6 @@ module Vendor
   
   def set_vendor_name
     name = gets.chomp
-    @vendor_name = name if name.empty? == false
+    @vendor_name = name unless name.to_s.empty?
   end
 end

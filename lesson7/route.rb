@@ -17,15 +17,15 @@ class Route
   end
 
   def delete_station(station)
-    if station != @stations.last && station != @stations.first
+    unless station = @stations.last && station = @stations.first
       @stations.delete(station)
     end
   end
 
   private
   def validate!
-    raise "Начальной станции не существует!" if !@stations.first.is_a? Station
-    raise "Конечной станции не существует!" if !@stations.last.is_a? Station
+    raise "Начальной станции не существует!" unless @stations.first.is_a? Station
+    raise "Конечной станции не существует!" unless @stations.last.is_a? Station
     true
   end
 end

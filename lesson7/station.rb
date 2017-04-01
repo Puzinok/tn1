@@ -8,7 +8,7 @@ class Station
   end
 
   def each_train
-    self.trains.each { |train| yield(train) }
+    trains.each { |train| yield(train) }
   end
 
   def initialize(name)
