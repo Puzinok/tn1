@@ -32,9 +32,8 @@ class Train
   end
 
   def add_carriage(carriage)
-    unless @carriages.include?(carriage)
-      @carriages.push(carriage) if valid_carriage?(carriage) && stopped?
-    end
+    return if @carriages.include?(carriage)
+    @carriages << carriage if valid_carriage?(carriage) && stopped?
   end
 
   def delete_carriage(carriage)
