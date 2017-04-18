@@ -1,29 +1,28 @@
+require_relative 'validation'
 class Station
-  attr_reader :name, :trains
-
-  @@all_stations = []
+  include Validation
 
   NAME_FORMAT = /\w.+/i
+  
+  attr_reader :name, :trains
+
+  validate :name, :presence
+  validate :name, :format, NAME_FORMAT
 
   def self.all
-    @@all_stations
+    @@all_stations ||= []
   end
 
   def initialize(name)
     @trains = []
-    @name = name.capitalize!
+    @name = name
     validate!
+    is_uniq?
     @@all_stations << self
   end
 
   def each_train
     trains.each { |train| yield(train) }
-  end
-
-  def valid?
-    validate!
-  rescue
-    false
   end
 
   def arrive(train)
@@ -40,9 +39,7 @@ class Station
 
   private
 
-  def validate!
-    raise 'Отсутствует название станции!' if name.to_s.empty?
-    raise 'Название должно быть больше 1 символа' if name !~ NAME_FORMAT
+  def is_uniq?
     raise 'Такая станция уже есть!' if self.class.all.find { |s| s.name == name }
     true
   end

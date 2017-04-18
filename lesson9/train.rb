@@ -1,34 +1,31 @@
 require_relative 'vendor'
+require_relative 'validation'
 
 class Train
   include Vendor
+  include Validation
+
+  ID_FORMAT = /^[a-z\d]{3}-?[a-z\d]{2}$/i
 
   attr_reader :id, :speed, :route, :carriages
-
+  
   @@all_trains = {}
 
   def self.find(train_id)
     @@all_trains[train_id]
   end
 
-  ID_FORMAT = /^[a-z\d]{3}-?[a-z\d]{2}$/i
-
   def initialize(id)
     @speed = 0
     @id = id
     validate!
+    is_uniq?
     @carriages = []
     @@all_trains[@id] = self
   end
 
   def each_carriage
     carriages.each { |car| yield(car) }
-  end
-
-  def valid?
-    validate!
-  rescue
-    false
   end
 
   def add_carriage(carriage)
@@ -84,8 +81,7 @@ class Train
 
   def valid_carriage?; end
 
-  def validate!
-    raise 'Номер не соответствует формату!' if id.to_s !~ ID_FORMAT
+  def is_uniq?
     raise 'Поезд с таким номером уже сушествует!' if Train.find(id)
     true
   end

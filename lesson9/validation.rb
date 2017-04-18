@@ -14,11 +14,9 @@ module Validation
 
   module InstanceMethods
     def validate!
-      self.class.instance_variable_get(:@validations).each do |key, value|
-        value.each { |v| send("validate_#{v[0]}", key, *v[1]) }
+      self.class.instance_variable_get(:@validations).each do |attr_name, validations|
+        validations.each { |v| send("validate_#{v[0]}", attr_name, *v[1]) }
       end
-    rescue RuntimeError => e
-      puts "Ошибка! #{e}"
     end
 
     def valid?
@@ -30,7 +28,7 @@ module Validation
     private
 
     def validate_presence(name)
-      raise "#{name} = nil, или пустой строке!" if send(name.to_s).to_s.empty?
+      raise "#{name} равно nil, или пустой строке!" if send(name.to_s).to_s.empty?
     end
 
     def validate_type(name, type)
